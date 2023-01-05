@@ -22,23 +22,32 @@ function updateDisplay(id)
     let display = document.getElementById('display');
     let placeHolder = document.getElementById('placeHolder');
 
-    console.log(placeHolder);
     if ((Number(id) >= 0 && Number(id) <= 9) || id === '.') 
     {
+        if (display.textContent == "0.")
+        {
+            display.textContent = '';
+        }
         display.textContent += id;
         expression += id;
     } else if (id === 'ce') {
-        display.textContent = "";
+        display.textContent = "0.";
         expression = "";
     } else if (id === '+' || id === '-' || id === 'x' || id === '/') {
-        display.textContent = "";
+        if (expression.includes('+') || expression.includes('-') || expression.includes('x') ||
+        expression.includes('/'))
+        {
+            result = equals(expression);
+            expression = result;
+            display.textContent = result;
+        }
+        display.textContent = "0."
         expression += id;
     } else if (id === '=') {
         result = equals(expression);
         display.textContent = result;
+        expression = result;
     }
-
-    console.log(expression);
 }
 
 function equals(e) 

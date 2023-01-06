@@ -1,73 +1,114 @@
-let firstNum = 0;
-let expression = "";
+let firstNum = undefined;
+let secondNum = undefined;
+let operator = "";
+let input = false;
 let result;
+let defaultText = "0"
+let lastNum;
+let memoryNum;
+let memorySet = false;
 
-
-function addListeners()
-{
-    const btns = document.getElementsByClassName('button')
-    
-    for (i = 0; i < btns.length; i++)
-    {
-        let btn = btns[i];
-        btn.addEventListener('click', function(){
-            let btnId = btn.id;
-            updateDisplay(btnId);
-        });
-    }
-}
+display = document.getElementById('display');
 
 function updateDisplay(id)
 {
-    let display = document.getElementById('display');
-    let placeHolder = document.getElementById('placeHolder');
+    //check id and see if number or operator
+    if (Number(id) >= 0 || Number(id) <= 9){
+        //see if display is being updated or reset
+        if (!input){
+            display.textContent = id;
+            input = true;
+        } else {
+            if (display.textContent.length < 12){
+                display.textContent += id;
+            }
+        }
+    } else if (id === '/' || id === 'x' || id === '-' || id === '+'){
+        input = false;
+        if (firstNum === undefined) {
+            firstNum = display.textContent;
+        } else {
+            firstNum = equals(operator, firstNum, display.textContent);
+            if (firstNum.toString().length < 12)
+            {
+                display.textContent = firstNum;
+            } else {
+                //console.log("error in operators", firstNum);
+                display.textContent = 'ERROR';
+            }
+            
+        }
+        operator = id;
+        
+    } else if (id === '='){
+        if (firstNum !== undefined){
+            input = false;
+            secondNum = display.textContent;
+            if (secondNum !== "0"){
+                result = equals(operator, firstNum, secondNum);
+                if (result.toFixed(2).length < 12)
+                    {
+                        if (firstNum.toString().includes(".")){
+                            display.textContent = result.toFixed(2);
+                        } else {
+                            display.textContent = result;
+                        }
+                        
+                } else {
+                    //console.log("error in equals", display.textContent);
+                    display.textContent = 'ERROR';   
+                        
+                }
+            } else {
+                display.textContent = "Yeah, no.";
+            }
+        }
+        
+    } else if (id === 'c'){
+        input = false;
+        display.textContent = defaultText;
+    } else if (id === 'ce'){
+        input = false;
+        display.textContent = defaultText;
+        firstNum = undefined;
+        operator = "";
+        memorySet = false;
+    } else if (id === 'm'){
+        if (!memorySet){
+            memoryNum = display.textContent;
+            display.textContent = defaultText;
+            memorySet = true;
+            firstNum = undefined;
+            operator = "";
+        } else {
+            display.textContent = memoryNum;
 
-    if ((Number(id) >= 0 && Number(id) <= 9) || id === '.') 
-    {
-        if (display.textContent == "0.")
-        {
-            display.textContent = '';
         }
-        display.textContent += id;
-        expression += id;
-    } else if (id === 'ce') {
-        display.textContent = "0.";
-        expression = "";
-    } else if (id === '+' || id === '-' || id === 'x' || id === '/') {
-        if (expression.includes('+') || expression.includes('-') || expression.includes('x') ||
-        expression.includes('/'))
+    } else if (id === '.'){
+        if (!display.textContent.includes(id))
         {
-            result = equals(expression);
-            expression = result;
-            display.textContent = result;
+            display.textContent += id;
         }
-        display.textContent = "0."
-        expression += id;
-    } else if (id === '=') {
-        result = equals(expression);
-        display.textContent = result;
-        expression = result;
     }
-}
+}           
 
-function equals(e) 
+
+
+
+function equals(e, num1, num2) 
 {
-    if (e.includes("+"))
+    if (e === "+")
     {
-        const strings = e.split("+");
-        return addition(strings[0], strings[1]);
-    } else if (e.includes('-'))
+        return addition(num1, num2);
+    } else if (e === "-")
     {
-        const strings = e.split("-");
-        return subtraction(strings[0], strings[1]);
-    } else if (e.includes('x'))
+        return subtraction(num1, num2);
+    } else if (e === "x")
     {
-        const strings = e.split("x");
-        return multiplication(strings[0], strings[1]);
-    } else if (e.includes('/'))
+        return multiplication(num1, num2);
+    } else if (e === '/')
     {
-        const strings = e.split('/');
-        return division(strings[0], strings[1]);
+        return division(num1, num2);
     }
 }
 
@@ -91,4 +132,25 @@ function division(num1, num2)
     return Number(num1) / Number(num2);
 }
 
-addListeners()
+let onCount = 0;
+function addListeners()
+{
+    if (onCount < 1)
+    {
+        display.textContent = "0";
+        const btns = document.getElementsByClassName('button')
+        
+        for (i = 0; i < btns.length; i++)
+        {
+            let btn = btns[i];
+            btn.addEventListener('click', function(){
+                let btnId = btn.id;
+                updateDisplay(btnId);
+            });
+        }
+        onCount++;
+    }
+}
+
+onBtn = document.getElementById('on');
+onBtn.addEventListener('click', addListeners);

@@ -1,8 +1,12 @@
 body {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     padding: 200px;
+    background-image: url("background.jpg");
+    background-repeat: no-repeat;
+    background-size:cover;
 }
 
 #mainDiv {
@@ -11,7 +15,7 @@ body {
     height: 600px;
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
     border-radius: 10px;
     box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
@@ -45,8 +49,9 @@ body {
     justify-content: flex-end;
     align-items: center;
     font-size: 4em;
-    padding: 5px;
+    padding: 7px;
 }
+
 
 #keyDiv {
     width: 425px;
